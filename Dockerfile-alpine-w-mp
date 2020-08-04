@@ -45,17 +45,16 @@ RUN apk --update add --no-cache openjdk11-jre-headless curl libxml2-utils tzdata
   echo $'#!/bin/sh\n\
 if [ -e /opt/midpoint-check ] ; then\n\
 	echo "Processing midpoint-check directory..."\n\
-	for i in /opt/midpoint-check/* ; do\n\
+	for i in $( find /opt/midpoint-check -mindepth 1 -maxdepth 1 -type d ) ; do\n\
 		l_name=$(basename ${i})\n\
 		[ ! -e ${MP_DIR}/var/${l_name} ] && mkdir -p ${MP_DIR}/var/${l_name}\n\
-                for s in ${i}/* ; do \n\
-                        local_filename=$(basename ${s})\n\
-                        if [ ! -e ${MP_DIR}/var/${l_name}/${local_filename} -a ! -e ${MP_DIR}/var/${l_name}/${local_filename}.done ]\n\
+                for s in $( find ${i} -mindepth 1 -maxdepth 1 -type f -exec basename \{\} \; ) ; do \n\
+                        if [ ! -e ${MP_DIR}/var/${l_name}/${s} -a ! -e ${MP_DIR}/var/${l_name}/${s}.done ]\n\
                         then\n\
-				echo "COPY ${s} => ${MP_DIR}/var/${l_name}/${local_filename}"\n\
-                                cp ${s} ${MP_DIR}/var/${l_name}/${local_filename}\n\
+				echo "COPY ${i}/${s} => ${MP_DIR}/var/${l_name}/${s}"\n\
+                                cp ${i}/${s} ${MP_DIR}/var/${l_name}/${s}\n\
 			else\n\
-				echo "SKIP: ${s}"\n\
+				echo "SKIP: ${i}/${s}"\n\
                         fi\n\
                 done\n\
         done\n\

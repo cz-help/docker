@@ -9,6 +9,7 @@ ADD https://raw.githubusercontent.com/Evolveum/midpoint-docker/master/download-m
   /opt/
 
 RUN chmod 755 /opt/download-midpoint && \
+  sed -i "s/\.\[0-9\]/.[\\\-M0-9]/" /opt/download-midpoint && \
   /opt/download-midpoint ${MP_VERSION} && \
   mkdir /opt/midpoint && \
   tar -xzC /opt/midpoint -f /opt/midpoint-dist.tar.gz --strip-components=1 

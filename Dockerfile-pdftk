@@ -1,0 +1,10 @@
+FROM alpine:3.8
+
+LABEL maintainer="kamil@jires.eu"
+
+RUN apk update && apk upgrade \
+      && apk add pdftk && mkdir /workdir
+WORKDIR /workdir
+VOLUME ["/workdir"]
+
+ENTRYPOINT ["pdftk"]
